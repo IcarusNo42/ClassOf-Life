@@ -1,5 +1,5 @@
 #pragma once
-#include "Genom.h"
+#include "Genome.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -16,7 +16,7 @@ class Cell
 public:
     Cell(int chromosomeNumber, string filename);
 
-    void removeIncorrectPairs();
+    void cellDeath();
 
     string complementary(string s);
 
@@ -33,6 +33,6 @@ public:
     void shortMutation(char o, char r, int num, int chorm_num);
 
 protected:
-    vector<pair<int, Genom>> chromosomes;
+    vector<pair<int, Genome>> chromosomes;
     int chromosomeNumber;
 };
