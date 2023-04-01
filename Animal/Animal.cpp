@@ -1,6 +1,6 @@
 #include "Animal.h"
 
-Animal::double calculateSimilarity(string seq1, string seq2);
+double Animal::calculateSimilarity(string seq1, string seq2);
 {
     int n = seq1.length();
     int m = seq2.length();
@@ -52,7 +52,7 @@ Animal::double calculateSimilarity(string seq1, string seq2);
     // Return the percentage of genetic similarity
     return (double)matched / total * 100.0;
 }
-Animal::double calculateSimilarity(string *chr1, string *chr2)
+double Animal::calculateSimilarity(string *chr1, string *chr2)
 {
 
     // Calculate similarity between strand 1 of chromosome 1 and strand 1 of chromosome 2
@@ -72,7 +72,7 @@ Animal::double calculateSimilarity(string *chr1, string *chr2)
     double avg_sim2 = (sima1 + sima2) / 2.0;
     return max(avg_sim1, avg_sim2);
 }
-Animal::Cell merging(Cell a)
+Cell Animal::merging(Cell a)
 {
     vector<int> id;
     vector<pair<int, genome>> result = a.chromosomes;
@@ -94,7 +94,7 @@ Animal::Cell merging(Cell a)
     }
     return result;
 }
-Animal::double totalSimilarity(Cell chr_list1, Cell chr_list2)
+double Animal::totalSimilarity(Cell chr_list1, Cell chr_list2)
 {
     double total_sim = 0.0;
     int num_comparisons = 0;
@@ -126,11 +126,11 @@ Animal::double totalSimilarity(Cell chr_list1, Cell chr_list2)
 
     return avg_sim;
 }
-Animal::bool operator==(const Animal &sec)
+bool Animal::operator==(const Animal &sec)
 {
     return (totalSimilarity(chromosomes, sec.chromosomes) >= 70 && chromosomeNumber == sec.chromosomeNumber);
 }
-Animal::vector<int> generateRandom(int m)
+vector<int> Animal::generateRandom(int m)
 {
     int n = floor(0.7 * m);
     // Create a vector to store the unique random numbers
@@ -166,7 +166,7 @@ Animal::vector<int> generateRandom(int m)
     return result;
 }
 
-Animal::Animal asexualReproduction(Animal animal)
+Animal Animal::asexualReproduction(Animal animal)
 {
     Animal new;
     vector<int> basic = generateRandom(animal.chromosomeNumber);
@@ -176,7 +176,7 @@ Animal::Animal asexualReproduction(Animal animal)
     return new;
 }
 
-Animal::Animal operator+(const Animal &sec)
+Animal Animal::operator+(const Animal &sec)
 {
 
     Animal p1 = asexualReproduction(animal1), p2 = asexualReproduction(sec), child;
@@ -199,7 +199,7 @@ Animal::Animal operator+(const Animal &sec)
     else
         cout << "Two organisms are not of the same species, so they cannot have sexual reproduction!!!" << endl;
 }
-Animal::void removeIncorrectPairs()
+void Animal::removeIncorrectPairs()
 {
     int pos = 0;
     for (auto &chrom : chromosomes)

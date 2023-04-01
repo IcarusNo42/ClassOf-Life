@@ -32,7 +32,7 @@ public:
 
     void shortMutation(char o, char r, int num, int chorm_num);
 
-private:
+protected:
     vector<pair<int, Genom>> chromosomes;
     int chromosomeNumber;
 };
