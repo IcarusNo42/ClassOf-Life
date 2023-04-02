@@ -195,7 +195,7 @@ Animal Animal::operator+(const Animal &sec)
         return child;
     }
     else if (p1 == p2 && chromosomeNumber % 2 != 0)
-        cout << "The chromosomal number of two organisms is not sufficient for sexual reproduction!!!" << endl;
+        cout << "The chromosomal number of two organisms is not sufficient for sexual reproduction!!!!" << endl;
     else
         cout << "Two organisms are not of the same species, so they cannot have sexual reproduction!!!" << endl;
 }

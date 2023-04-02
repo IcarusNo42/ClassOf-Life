@@ -1,7 +1,7 @@
 #pragma once
 #include <iostream>
-#include <vector>
 #include <algorithm>
+#include <vector>
 #include <random>
 #include <cmath>
 #include "Genome.h"
