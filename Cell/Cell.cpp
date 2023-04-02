@@ -27,7 +27,7 @@ Cell::Cell(int chromosomeNumber, string filename)
   }
   else
   {
-    cout << "Error opening file: " << filename << endl;
+    cout << "!!Error opening file: " << filename << endl;
     return;
   }
   file.close();
