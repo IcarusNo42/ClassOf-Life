@@ -1,5 +1,4 @@
 #include <bits/stdc++.h>
-#include"Animal.h"
 using namespace std;
 class Virus{
 	public:
@@ -10,20 +9,20 @@ class Virus{
 	}
 
 	//Finding the lcm
-	string lcs(vector<Genome> str){
+	string lcs(vector<pair<int, Genome>> str){
  	string res="";
 
-		for (int i=0 ; i<str[0].inputDNA[0].length(); i++){
-			for (int j=str[0].inputDNA[0].length()-i; j>-1; j--){
-				cout<<str[0].inputDNA[0].substr(i,j)<<endl;
+		for (int i=0 ; i<str[0].second.inputDNA[0].length(); i++){
+			for (int j=str[0].second.inputDNA[0].length()-i; j>-1; j--){
+				cout<<str[0].second.inputDNA[0].substr(i,j)<<endl;
 				if (j>res.length()){
 					for (int x=1; x<str.size(); x++){
-						if (str[x].inputDNA[0].find(str[0].inputDNA[0].substr(i,j)) == std::string::npos && str[x].inputDNA[1].find(str[0].inputDNA[0].substr(i,j)) == std::string::npos ){
+						if (str[x].second.inputDNA[0].find(str[0].second.inputDNA[0].substr(i,j)) == std::string::npos && str[x].second.inputDNA[1].find(str[0].second.inputDNA[0].substr(i,j)) == std::string::npos ){
 							break;
 						}
 						
 						if (x==1)
-							res=str[0].inputDNA[0].substr(i,j);
+							res=str[0].second.inputDNA[0].substr(i,j);
 					}
 				}
 			}
@@ -52,11 +51,6 @@ class Virus{
 };
      
 
-int main()
-{
-	Virus v;
-	
-	
-}
+
 
 
