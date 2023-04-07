@@ -3,9 +3,12 @@
 
 using namespace std;
 class Genome{
-	private:
+	protected:
 		string inputDNA[2],DNA[2],RNA;
 	public:
+	Genome();
+
+	string* getDNA();
 	void recieve();
 	// tabe bara sakht mokamel
 	char help(char& a);
@@ -17,4 +20,6 @@ class Genome{
 	void bigJump(string s1,string s2);
 	// tabe baraye jahesh makoos
 	void reversing(string s);
+
+	 friend class Cell;
 };
