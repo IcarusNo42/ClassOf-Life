@@ -72,40 +72,12 @@ double Animal::calculateSimilarity(string *chr1, string *chr2)
     double avg_sim2 = (sima1 + sima2) / 2.0;
     return max(avg_sim1, avg_sim2);
 }
-Cell Animal::merging(Cell a)
-{
-    vector<int> id;
-    vector<pair<int, genome>> result = a.chromosomes;
-    for (int i = 0; i < result.size(); i++)
-    {
-        for (int j = i + 1; j < result.size(); j++)
-        {
-            if (result[j].second == result[i].second)
-                id.push_back(result[j].first);
-        }
-    }
-    int pos = 0;
-    for (auto chr : result)
-    {
-        if (count(id.begin(), id.end(), chr.first) != 0)
-            result.erase(result.begin() + pos); // remove the chromosome
-        else
-            pos++;
-    }
-    return result;
-}
 double Animal::totalSimilarity(Cell chr_list1, Cell chr_list2)
 {
-    double total_sim = 0.0;
-    int num_comparisons = 0;
-    auto &case1 = merging(chr_list1);
-    auto &case2 = merging(chr_list2);
-    if (case2.size() > case1.size())
-    {
-        auto &case3 = case1;
-        case2 = case1;
-        case1 = case3;
-    }
+    double total_sim = 0.0, total_sim2 = 0.0;
+    int num_comparisons = 0, num_comparisons2 = 0;
+    auto &case1 = chr_list1;
+    auto &case2 = chr_list2;
     // Compare each chromosome in list 1 to each chromosome in list 2
     for (auto chr1 : case1)
     {
@@ -120,11 +92,26 @@ double Animal::totalSimilarity(Cell chr_list1, Cell chr_list2)
         total_sim += chr_sim;
         num_comparisons++;
     }
+    // Compare each chromosome in list 2 to each chromosome in list 1
+    for (auto chr2 : case1)
+    {
+        double chr_sim = 0;
+        for (auto chr1 : case1)
+        {
+            // Calculate similarity between the two chromosomes
+            double temp = calculateSimilarity(chr2.second, chr1.second);
+            chr_sim < temp ? chr_sim = temp : chr_sim = chr_sim;
+        }
+        // Add similarity score to running total
+        total_sim2 += chr_sim;
+        num_comparisons2++;
+    }
 
     // Calculate average similarity score for the entire set of chromosomes
     double avg_sim = total_sim / num_comparisons;
+    double avg_sim2 = total_sim2 / num_comparisons2;
 
-    return avg_sim;
+    return (avg_sim + avg_sim2) / 2;
 }
 bool Animal::operator==(const Animal &sec)
 {
@@ -209,7 +196,8 @@ void Animal::removeIncorrectPairs()
         // Loop over each DNA strand in the chromosome
         int len = DNA[0].size();
         int mismatches = 0;
-
+        int Tpair = 0, Cpair = 0;
+        bool found = false;
         // Check for incorrect base pairs
         for (int i = 0; i < len; ++i)
         {
@@ -223,11 +211,72 @@ void Animal::removeIncorrectPairs()
                 {
                     cout << "Chromosome number " << chrom.first << " was destroyed due to having more than 5 incorrect base pairs !!!" << '\n';
                     chromosomes.erase(chromosomes.begin() + pos); // remove the chromosome
+                    found = true;
                     break;
                 }
             }
             if (mismatches <= 5)
                 pos++;
+            if (base1 == 'T' || base1 == 'A')
+                Tpair++;
+            else
+                Cpair++;
         }
+        if (Tpair > Cpair * 3 && !found)
+        {
+            cout << "Chromosome number " << chrom.first << " was destroyed due to having more than 5 incorrect base pairs !!!" << '\n';
+            chromosomes.erase(chromosomes.begin() + pos); // remove the chromosome
+        }
+    }
+}
+
+Virus::Virus()
+{
+    cin >> RNA;
+}
+// Finding the lcm
+string Virus::lcs(vector<pair<int, Genome>> str)
+{
+    string res = "";
+
+    for (int i = 0; i < str[0].second.inputDNA[0].length(); i++)
+    {
+        for (int j = str[0].second.inputDNA[0].length() - i; j > -1; j--)
+        {
+            cout << str[0].second.inputDNA[0].substr(i, j) << endl;
+            if (j > res.length())
+            {
+                for (int x = 1; x < str.size(); x++)
+                {
+                    if (str[x].second.inputDNA[0].find(str[0].second.inputDNA[0].substr(i, j)) == std::string::npos && str[x].second.inputDNA[1].find(str[0].second.inputDNA[0].substr(i, j)) == std::string::npos)
+                    {
+                        break;
+                    }
+
+                    if (x == 1)
+                        res = str[0].second.inputDNA[0].substr(i, j);
+                }
+            }
+        }
+    }
+    return res;
+}
+bool Virus::virusCheck(string r)
+{
+    if (RNA.find(r) != std::string::npos)
+    {
+        return true;
+    }
+    for (int i = 0; i < r.length(); i++)
+    {
+        r[i] = complement[r.[i]];
+    }
+    else if (RNA.find(r) != std::string::npos)
+    {
+        return true;
+    }
+    else
+    {
+        return false;
     }
 }

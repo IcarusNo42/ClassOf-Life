@@ -26,4 +26,22 @@ public:
     Animal operator+(const Animal &sec);
 
     void removeIncorrectPairs();
+
+    friend class Virus;
 };
+class Virus{
+	public:
+	int n;
+	string RNA;
+	Virus();
+
+	//Finding the lcm
+	string lcs(vector<pair<int, Genome>> str);
+
+	bool virusCheck(string r);
+};
+     
+
+
+
+

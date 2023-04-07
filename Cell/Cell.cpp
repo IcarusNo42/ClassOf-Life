@@ -71,10 +71,9 @@ void Cell::cellDeath()
     }
     if (found || Tpair > Cpair * 3)
     {
-      ~Cell()
-      {
+        delete this;
         cout << "So you will lose your cell and it will die" << endl;
-      }
+         break;
     }
   }
 }
