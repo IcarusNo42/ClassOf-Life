@@ -5,6 +5,8 @@ int P[SIZE * 2];
 // Map of complementary nucleotides
 unordered_map<char, char> complement = {{'A', 'T'}, {'C', 'G'}, {'G', 'C'}, {'T', 'A'}};
 
+Cell::Cell() {}
+
 Cell::Cell(int chromosomeNumber, string filename)
 {
   chromosomes.reserve(chromosomeNumber);
@@ -71,9 +73,9 @@ void Cell::cellDeath()
     }
     if (found || Tpair > Cpair * 3)
     {
-        delete this;
-        cout << "So you will lose your cell and it will die" << endl;
-         break;
+      delete this;
+      cout << "So you will lose your cell and it will die" << endl;
+      break;
     }
   }
 }
@@ -115,7 +117,7 @@ vector<int> Cell::computeLPS(string pattern)
   }
   return lps;
 }
-//This method moves two nucleotide sequences between two chromosomes
+// This method moves two nucleotide sequences between two chromosomes
 void Cell::translocationMutation(string S1, int n, string S2, int m)
 {
   auto &DNA1 = chromosomes[n - 1].second.DNA;
@@ -233,6 +235,7 @@ void Cell::translocationMutation(string S1, int n, string S2, int m)
       DNA2[0].replace(j, m2, _S1);
       DNA2[1].replace(j, m2, S1);
     }
+    cout << "The desired operation was completed successfully" << endl;
   }
   else
     cout << "The desired nucleotide sequence was not found in the chromosome, translocation mutation is not possible !!!" << '\n';
@@ -293,7 +296,8 @@ void Cell::inversionMutation(string s1, int chrom_num)
   }
   if (!found)
     cout << "It is not possible to carry out inversion mutation in the desired chromosome" << endl;
-  cout << DNA[0] << " " << DNA[1] << endl;
+  else
+    cout << "The desired operation was completed successfully" << endl;
 }
 string Cell::convertToNewString(const string &s)
 {
@@ -367,6 +371,7 @@ void Cell::shortMutation(char o, char r, int num, int chorm_num)
             if (count == num)
             {
               finished = true;
+              cout << "The desired operation was completed successfully" << endl;
               break;
             }
           }

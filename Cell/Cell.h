@@ -11,9 +11,10 @@ using namespace std;
 #define SIZE 100000 + 1
 extern unordered_map<char, char> complement;
 extern int P[SIZE * 2];
-class Cell : public Genome
+class Cell
 {
 public:
+    Cell();
     Cell(int chromosomeNumber, string filename);
 
     void cellDeath();
