@@ -9,36 +9,37 @@
 class Animal : public Cell
 {
 public:
+    Animal();
+    Animal(int chromosomeNumber, string filename);
+
     double calculateSimilarity(string seq1, string seq2);
 
     double calculateSimilarity(string *chr1, string *chr2);
 
-    Cell merging(Cell a);
-
-    double totalSimilarity(Cell chr_list1, Cell chr_list2);
+    double totalSimilarity(Animal chr_list2);
 
     bool operator==(const Animal &sec);
 
     vector<int> generateRandom(int m);
 
-    Animal asexualReproduction(Animal animal);
+    Animal* asexualReproduction();
 
-    Animal operator+(const Animal &sec);
+    Animal* operator+( Animal sec);
 
     void removeIncorrectPairs();
 
     friend class Virus;
+    friend void display(Animal animal);
+    friend void saveGenome(Animal animal);
 };
-class Virus{
+class Virus : public Genome{
 	public:
-	int n;
-	string RNA;
-	Virus();
+	Virus(string RNA);
 
 	//Finding the lcm
 	string lcs(vector<pair<int, Genome>> str);
 
-	bool virusCheck(string r);
+	bool virusCheck(Animal a);
 };
      
 
