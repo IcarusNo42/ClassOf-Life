@@ -1,4 +1,4 @@
-   #include "Genome.h"
+     #include "Genome.h"
    using namespace std;
    Genome::Genome(){
 		cin>>RNA;
@@ -83,7 +83,7 @@
 		}
 		auto loc2 = DNA[0].find(s1);
 		auto loc3=DNA[1].find(s1);
-		if ( loc2>=loc3 )
+		if ( loc2<=loc3 )
 		{
 		    for (int i=0 ; i<s1.length(); i++){
 				DNA[0][i+loc2]=s2[i];
@@ -112,7 +112,7 @@
 		}
 		auto loc2 = DNA[0].find(s);
 		auto loc3=DNA[1].find(s);
-		if ( loc2>=loc3 )
+		if ( loc2<=loc3 )
 		{
 		   reverse(DNA[0].begin() + loc2, DNA[0].begin() + loc2 +s.length());
 		   reverse(DNA[1].begin() + loc2, DNA[1].begin() + loc2 +s.length());
@@ -124,81 +124,3 @@
 		}
 		cout<<DNA[0]<<endl<<DNA[1]<<endl;
 	}
-
-		for (int i=0 ; i<RNA.length();i++){
-			if (check==n)
-				break;
-			if (RNA[i]==a){
-				RNA[i]=b;
-				check++;
-			}
-		}
-		check=0;
-		char mokamel=help(b);
-		for (int i=0 ; i<inputDNA[0].length(); i++){
-			if (check==n)
-				break;
-			if (inputDNA[0][i]==a){
-				inputDNA[0][i]=b;
-				inputDNA[1][i]=mokamel;
-				check++;
-			}
-			if (check==n)
-				break;
-			if (inputDNA[1][i]==a){
-				inputDNA[1][i]=b;
-				inputDNA[0][i]=mokamel;
-				check++;
-			}
-		}
-		
-	}
-	
-	// tabe jahesh bozorg
-	void Genome::bigJump(string s1,string s2){
-		auto loc = RNA.find(s1);
-		for (int i=0 ; i<s1.length(); i++){
-			RNA[i+loc]=s2[i];
-		}
-		auto loc2 = inputDNA[0].find(s1);
-		auto loc3=inputDNA[1].find(s1);
-		if ( loc2>=loc3 )
-		{
-		    for (int i=0 ; i<s1.length(); i++){
-				inputDNA[0][i+loc2]=s2[i];
-			}
-			for (int i=0 ; i<s1.length(); i++){
-				inputDNA[1][i+loc2]=help(s2[i]);
-			}
-		}
-		else
-		{
-		   for (int i=0 ; i<s1.length(); i++){
-				inputDNA[1][i+loc3]=s2[i];
-			}
-			for (int i=0 ; i<s1.length(); i++){
-				inputDNA[0][i+loc3]=help(s2[i]);
-			}
-		}
-	}
-	// tabe baraye jahesh makoos
-	void Genome::reversing(string s){
-		auto loc = RNA.find(s);
-		if ( loc != string::npos )
-		{
-		   reverse(RNA.begin() + loc, RNA.begin() + loc +s.length());
-		}
-		auto loc2 = inputDNA[0].find(s);
-		auto loc3=inputDNA[1].find(s);
-		if ( loc2>=loc3 )
-		{
-		   reverse(inputDNA[0].begin() + loc2, inputDNA[0].begin() + loc2 +s.length());
-		   reverse(inputDNA[1].begin() + loc2, inputDNA[1].begin() + loc2 +s.length());
-		}
-		else
-		{
-		   reverse(inputDNA[0].begin() + loc3, inputDNA[0].begin() + loc3 +s.length());
-		   reverse(inputDNA[1].begin() + loc3, inputDNA[1].begin() + loc3 +s.length());
-		}
-	}
-
