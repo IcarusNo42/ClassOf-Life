@@ -21,7 +21,7 @@ class Virus{
 							break;
 						}
 						
-						if (x==1)
+						if (x==str.size()-1)
 							res=str[0].second.inputDNA[0].substr(i,j);
 					}
 				}
