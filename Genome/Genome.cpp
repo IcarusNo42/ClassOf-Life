@@ -71,7 +71,7 @@
 				check++;
 			}
 		}
-		cout<<DNA[0]<<endl<<DNA[1]<<endl;
+		cout<<RNA<<endl<<DNA[0]<<endl<<DNA[1]<<endl;
 
 	}
 
@@ -101,7 +101,7 @@
 				DNA[0][i+loc3]=help(s2[i]);
 			}
 		}
-		cout<<DNA[0]<<endl<<DNA[1]<<endl;
+		cout<<RNA<<endl<<DNA[0]<<endl<<DNA[1]<<endl;
 	}
 	// tabe baraye jahesh makoos
 	void Genome::reversing(string s){
@@ -122,5 +122,5 @@
 		   reverse(DNA[0].begin() + loc3, DNA[0].begin() + loc3 +s.length());
 		   reverse(DNA[1].begin() + loc3, DNA[1].begin() + loc3 +s.length());
 		}
-		cout<<DNA[0]<<endl<<DNA[1]<<endl;
+		cout<<RNA<<endl<<DNA[0]<<endl<<DNA[1]<<endl;
 	}
