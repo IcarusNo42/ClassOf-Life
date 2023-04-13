@@ -63,9 +63,8 @@
 				DNA[1][i]=mokamel;
 				check++;
 			}
-			if (check==n)
-				break;
-			if (DNA[1][i]==a){
+			
+			else if (DNA[1][i]==a){
 				DNA[1][i]=b;
 				DNA[0][i]=mokamel;
 				check++;
