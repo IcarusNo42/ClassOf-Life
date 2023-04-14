@@ -20,9 +20,7 @@ Cell::Cell(int chromosomeNumber, string filename)
     int chromosome_number;
     while (file >> chromosome_number >> DNA1 >> DNA2)
     {
-      Genome chromosome;
-      chromosome.DNA[0] = DNA1;
-      chromosome.DNA[1] = DNA2;
+      Genome chromosome(DNA1, DNA2);
       chromosomes.push_back(make_pair(chromosome_number, chromosome));
       index++;
     }
