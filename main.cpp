@@ -11,9 +11,9 @@ public:
 	vector<Cell> cells;
 	vector<Animal> animals;
 	vector<Virus> viruses;
-	void addGenome()
+	void addGenome(string first, string second, string RNA)
 	{
-		Genome g;
+		Genome g(first, second, RNA);
 		genomes.push_back(g);
 	}
 	void addCell(int c, string fileName)
@@ -26,22 +26,23 @@ public:
 		Animal animal(c, fileName);
 		animals.push_back(animal);
 	}
-	void addVirus(string RNA){
+	void addVirus(string RNA)
+	{
 		Virus virus(RNA);
 		viruses.push_back(virus);
 	}
 };
 void genomeMenu(dataBase dataBase);
-void cellMenu(dataBase dataBase,int n);
+void cellMenu(dataBase dataBase, int n);
 void animalMenu(dataBase dataBase);
-void saveGenome(vector<pair<int, Genome>> chromosomes);
-void display(vector<pair<int, Genome>> chromosomes);
+void saveGenome(Animal animal);
+void display(Animal animal);
 int main()
 {
 	system("CLS");
 	int choice = -1;
 	int c;
-	string fileName;
+	string fileName, first, second, RNA;
 	dataBase dataBase;
 	while (choice != 0)
 	{
@@ -51,14 +52,19 @@ int main()
 		cout << "2.Cell" << endl;
 		cout << "3.Animal" << endl;
 		cout << "0.Exit" << endl;
-		cin >> choice ;
+		cin >> choice;
 		system("CLS");
 		getchar();
 		switch (choice)
 		{
 		case 1:
-			cout << "Enter a RNA and a DNA:" << endl;
-			dataBase.addGenome();
+			cout << "Enter a RNA :" << endl;
+			cin >> RNA;
+			cout << "Enter a first string of DNA:" << endl;
+			cin >> first;
+			cout << "Enter a second string of DNA :" << endl;
+			cin >> second;
+			dataBase.addGenome(first, second, RNA);
 			genomeMenu(dataBase);
 			break;
 		case 2:
@@ -67,7 +73,7 @@ int main()
 			cout << "Enter the name of the file in which the genetic content of the cell is located:" << endl;
 			cin >> fileName;
 			dataBase.addCell(c, fileName);
-			cellMenu(dataBase,1);
+			cellMenu(dataBase, 1);
 
 			break;
 		case 3:
@@ -83,7 +89,8 @@ int main()
 			break;
 		default:
 			cout << endl
-				 << "Invalid choice. Please try again." << endl << endl;
+				 << "Invalid choice. Please try again." << endl
+				 << endl;
 			break;
 		}
 	}
@@ -116,17 +123,17 @@ void genomeMenu(dataBase dataBase)
 			cin >> a >> b;
 			cout << "Now enter desired number of mutation: ";
 			cin >> n;
-			g.smallJump(a, b, n);
+			g.shortMutation(a, b, n);
 			break;
 		case 3:
 			cout << "First enter the sequence you want to delete and then enter the sequence you want to replace with a space:" << endl;
 			cin >> str1 >> str2;
-			g.bigJump(str1, str2);
+			g.translocationMutation(str1, str2);
 			break;
 		case 4:
 			cout << "Enter a sequence you want to reverse: " << endl;
 			cin >> str1;
-			g.reversing(str1);
+			g.inversionMutation(str1);
 			break;
 		case 0:
 			break;
@@ -141,9 +148,9 @@ void cellMenu(dataBase dataBase, int s)
 {
 	int n, c, cn, cn2;
 	char a, b;
-	string str1, str2,fileName;
+	string str1, str2, fileName;
 	int subChoice = -1;
-	Cell* cell;
+	Cell *cell;
 	if (s)
 		cell = &dataBase.cells[dataBase.cells.size() - 1];
 	else
@@ -200,9 +207,9 @@ void animalMenu(dataBase dataBase)
 {
 	int n, c, cn, cn2;
 	int subChoice = -1;
-	string fileName ,RNA;
+	string fileName, RNA;
 	Animal *nAnimal;
-	//Animal* animal = &dataBase.animals[dataBase.animals.size() - 1];
+	// Animal* animal = &dataBase.animals[dataBase.animals.size() - 1];
 	while (subChoice != 0)
 	{
 		cout << "Please choose your action:" << endl;
@@ -226,8 +233,8 @@ void animalMenu(dataBase dataBase)
 			cout << "Enter the name of the file in which the genetic content of the another animal is located:" << endl;
 			cin >> fileName;
 			dataBase.addAnimal(c, fileName);
-			//Animal* animal2 = &dataBase.animals[dataBase.animals.size() - 1];
-			cout << "The percentage of genetic similarity between the two breeds is " <<dataBase.animals[dataBase.animals.size() - 2].totalSimilarity(dataBase.animals[dataBase.animals.size() - 1]) << "%" << endl;
+			// Animal* animal2 = &dataBase.animals[dataBase.animals.size() - 1];
+			cout << "The percentage of genetic similarity between the two breeds is " << dataBase.animals[dataBase.animals.size() - 2].totalSimilarity(dataBase.animals[dataBase.animals.size() - 1]) << "%" << endl;
 			break;
 		case 2:
 			cout << "You also need another animal to use this method" << endl;
@@ -236,7 +243,7 @@ void animalMenu(dataBase dataBase)
 			cout << "Enter the name of the file in which the genetic content of the another animal is located:" << endl;
 			cin >> fileName;
 			dataBase.addAnimal(c, fileName);
-			//Animal* animal2 = &dataBase.animals[dataBase.animals.size() - 1];
+			// Animal* animal2 = &dataBase.animals[dataBase.animals.size() - 1];
 			if (dataBase.animals[dataBase.animals.size() - 1] == dataBase.animals[dataBase.animals.size() - 2])
 				cout << "Both animals are of the same species " << endl;
 			else
@@ -260,7 +267,7 @@ void animalMenu(dataBase dataBase)
 			cin >> fileName;
 			dataBase.addAnimal(c, fileName);
 			nAnimal = dataBase.animals[dataBase.animals.size() - 2] + dataBase.animals[dataBase.animals.size() - 1];
-			//Animal dataBase.animals[dataBase.animals.size() - 2] = dataBase.animals[dataBase.animals.size() - 1];
+			// Animal dataBase.animals[dataBase.animals.size() - 2] = dataBase.animals[dataBase.animals.size() - 1];
 			if (nAnimal != NULL)
 			{
 				saveGenome(*nAnimal);
@@ -272,13 +279,17 @@ void animalMenu(dataBase dataBase)
 			dataBase.animals[dataBase.animals.size() - 2].removeIncorrectPairs();
 			break;
 		case 6:
-			cellMenu(dataBase,0);
+			cellMenu(dataBase, 0);
 			break;
 		case 7:
 			cout << "Enter the RNA of the desired virus:" << endl;
+			cin >> RNA;
 			dataBase.addVirus(RNA);
-			if ( dataBase.viruses[dataBase.viruses.size() - 1].virusCheck(dataBase.animals[dataBase.animals.size() - 1]))
-				cout << "The virus is harmfull for animal!!!!"<<endl; else cout << "The viris is harmless for animal!!!!"<<endl; break;
+			if (dataBase.viruses[dataBase.viruses.size() - 1].virusCheck(dataBase.animals[dataBase.animals.size() - 1]))
+				cout << "The virus is harmfull for animal!!!!" << endl;
+			else
+				cout << "The viris is harmless for animal!!!!" << endl;
+			break;
 		case 0:
 			break;
 		default:
@@ -312,7 +323,6 @@ void display(Animal animal)
 			cout << line << endl;
 		}
 	}
-	
 }
 void saveGenome(Animal animal)
 {
