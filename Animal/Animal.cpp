@@ -139,10 +139,14 @@ vector<int> Animal::generateRandom(int m)
 
 Animal* Animal::asexualReproduction()
 {
-    Animal* nn;
+    Animal* nn = new Animal;
     vector<int> basic = generateRandom(chromosomeNumber);
-    for (int i = 0; i < basic.size(); i++)
-        nn->chromosomes.push_back(make_pair(i + 1, chromosomes[basic[i] - 1].second));
+    cout<<basic.size()<<endl;
+    Genome chrm;
+    for (int i = 0; i < basic.size(); i++){
+        chrm = chromosomes[basic[i] - 1].second;
+        nn->chromosomes.push_back(make_pair(i + 1,chrm ));
+}  
     nn->chromosomeNumber = chromosomeNumber;
     return nn;
 }
@@ -166,7 +170,7 @@ Animal* Animal::operator+( Animal sec)
         }
         return child;
     }
-    else if (p1 == p2 && chromosomeNumber % 2 != 0)
+    else if (sec.chromosomeNumber % 2 != 0 || chromosomeNumber % 2 != 0)
         cout << "The chromosomal number of two organisms is not sufficient for sexual reproduction!!!!" << endl;
     else
         cout << "Two organisms are not of the same species, so they cannot have sexual reproduction!!!" << endl;

@@ -29,8 +29,8 @@ public:
     void removeIncorrectPairs();
 
     friend class Virus;
-    friend void display(Animal animal);
-    friend void saveGenome(Animal animal);
+   
+    friend void saveGenome(Animal animal,string filename);
 };
 class Virus : public Genome{
 	public:

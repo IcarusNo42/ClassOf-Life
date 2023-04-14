@@ -2,9 +2,6 @@
 
 int P[SIZE * 2];
 
-// Map of complementary nucleotides
-unordered_map<char, char> complement = {{'A', 'T'}, {'C', 'G'}, {'G', 'C'}, {'T', 'A'}};
-
 Cell::Cell() {}
 
 Cell::Cell(int chromosomeNumber, string filename)
@@ -16,8 +13,8 @@ Cell::Cell(int chromosomeNumber, string filename)
   int index = 0;
   if (file.is_open())
   {
-    string DNA1, DNA2;
-    int chromosome_number;
+    string DNA1="", DNA2="";
+    int chromosome_number=0;
     while (file >> chromosome_number >> DNA1 >> DNA2)
     {
       Genome chromosome(DNA1, DNA2);
@@ -76,44 +73,6 @@ void Cell::cellDeath()
       break;
     }
   }
-}
-// Method to find the complementary sequence of a given DNA sequence
-string Cell::complementary(string s)
-{
-  for (auto &i : s)
-  {
-    i = complement[i];
-  }
-  return s;
-}
-// Method to compute the Longest Proper Prefix which is also a Suffix (LPS) of a given pattern string
-vector<int> Cell::computeLPS(string pattern)
-{
-  int m = pattern.length();
-  vector<int> lps(m);
-  int len = 0;
-  lps[0] = 0;
-  int i = 1;
-  while (i < m)
-  {
-    if (pattern[i] == pattern[len])
-    {
-      len++;
-      lps[i] = len;
-      i++;
-    }
-    else
-    {
-      if (len != 0)
-        len = lps[len - 1];
-      else
-      {
-        lps[i] = 0;
-        i++;
-      }
-    }
-  }
-  return lps;
 }
 // This method moves two nucleotide sequences between two chromosomes
 void Cell::translocationMutation(string S1, int n, string S2, int m)
