@@ -35,8 +35,9 @@ public:
 void genomeMenu(dataBase dataBase);
 void cellMenu(dataBase dataBase, int n);
 void animalMenu(dataBase dataBase);
-void saveGenome(Animal animal);
-void display(Animal animal);
+void saveGenome(Animal animal, string filename);
+void display(Cell animal);
+void display2(Genome genome);
 int main()
 {
 	system("CLS");
@@ -124,16 +125,19 @@ void genomeMenu(dataBase dataBase)
 			cout << "Now enter desired number of mutation: ";
 			cin >> n;
 			g.shortMutation(a, b, n);
+			display2(g);
 			break;
 		case 3:
 			cout << "First enter the sequence you want to delete and then enter the sequence you want to replace with a space:" << endl;
 			cin >> str1 >> str2;
 			g.translocationMutation(str1, str2);
+			display2(g);
 			break;
 		case 4:
 			cout << "Enter a sequence you want to reverse: " << endl;
 			cin >> str1;
 			g.inversionMutation(str1);
+			display2(g);
 			break;
 		case 0:
 			break;
@@ -177,6 +181,7 @@ void cellMenu(dataBase dataBase, int s)
 			cout << "Now enter the desired sequences in chromosomes " << cn << " and " << cn2 << " in order and with a space" << endl;
 			cin >> str1 >> str2;
 			cell->translocationMutation(str1, cn, str2, cn2);
+			display(*cell);
 			break;
 		case 3:
 			cout << "First, enter the chromosome number in which you want make a mutation: " << endl;
@@ -186,6 +191,7 @@ void cellMenu(dataBase dataBase, int s)
 			cout << "Now enter desired number of mutation: ";
 			cin >> n;
 			cell->shortMutation(a, b, n, cn);
+			display(*cell);
 			break;
 		case 4:
 			cout << "First, enter the chromosome number in which you want make a mutation: " << endl;
@@ -193,6 +199,7 @@ void cellMenu(dataBase dataBase, int s)
 			cout << "Enter a sequence you want to reverse: " << endl;
 			cin >> str1;
 			cell->inversionMutation(str1, cn);
+			display(*cell);
 			break;
 		case 0:
 			break;
@@ -234,7 +241,7 @@ void animalMenu(dataBase dataBase)
 			cin >> fileName;
 			dataBase.addAnimal(c, fileName);
 			// Animal* animal2 = &dataBase.animals[dataBase.animals.size() - 1];
-			cout << "The percentage of genetic similarity between the two breeds is " << dataBase.animals[dataBase.animals.size() - 2].totalSimilarity(dataBase.animals[dataBase.animals.size() - 1]) << "%" << endl;
+			cout << "The percentage of genetic similarity between the two breeds is " << dataBase.animals[0].totalSimilarity(dataBase.animals[dataBase.animals.size() - 1]) << "%" << endl;
 			break;
 		case 2:
 			cout << "You also need another animal to use this method" << endl;
@@ -244,17 +251,27 @@ void animalMenu(dataBase dataBase)
 			cin >> fileName;
 			dataBase.addAnimal(c, fileName);
 			// Animal* animal2 = &dataBase.animals[dataBase.animals.size() - 1];
-			if (dataBase.animals[dataBase.animals.size() - 1] == dataBase.animals[dataBase.animals.size() - 2])
+			if (dataBase.animals[0] == dataBase.animals[dataBase.animals.size() - 1])
 				cout << "Both animals are of the same species " << endl;
 			else
 				cout << "Both animals are not of the same species " << endl;
 			break;
 		case 3:
-			nAnimal = dataBase.animals[dataBase.animals.size() - 2].asexualReproduction();
-
+			// display(dataBase.animals[dataBase.animals.size() - 1]);
+			nAnimal = dataBase.animals[0].asexualReproduction();
 			if (nAnimal != NULL)
 			{
-				saveGenome(*nAnimal);
+				cout << "Do you want to save the new animal?y/N" << endl;
+				char answer;
+
+				answer = getch();
+
+				if (answer == 'y' || answer == 'Y')
+				{
+					cout << "What is the name of your new file??" << endl;
+					cin >> fileName;
+					saveGenome(*nAnimal, fileName);
+				}
 				display(*nAnimal);
 			}
 
@@ -266,17 +283,27 @@ void animalMenu(dataBase dataBase)
 			cout << "Enter the name of the file in which the genetic content of the another animal is located:" << endl;
 			cin >> fileName;
 			dataBase.addAnimal(c, fileName);
-			nAnimal = dataBase.animals[dataBase.animals.size() - 2] + dataBase.animals[dataBase.animals.size() - 1];
+			nAnimal = dataBase.animals[0] + dataBase.animals[dataBase.animals.size() - 1];
 			// Animal dataBase.animals[dataBase.animals.size() - 2] = dataBase.animals[dataBase.animals.size() - 1];
 			if (nAnimal != NULL)
 			{
-				saveGenome(*nAnimal);
+				cout << "Do you want to save the new animal?y/N" << endl;
+				char answer;
+
+				answer = getch();
+
+				if (answer == 'y' || answer == 'Y')
+				{
+					cout << "What is the name of your new file??" << endl;
+					cin >> fileName;
+					saveGenome(*nAnimal, fileName);
+				}
 				display(*nAnimal);
 			}
 
 			break;
 		case 5:
-			dataBase.animals[dataBase.animals.size() - 2].removeIncorrectPairs();
+			dataBase.animals[0].removeIncorrectPairs();
 			break;
 		case 6:
 			cellMenu(dataBase, 0);
@@ -285,7 +312,7 @@ void animalMenu(dataBase dataBase)
 			cout << "Enter the RNA of the desired virus:" << endl;
 			cin >> RNA;
 			dataBase.addVirus(RNA);
-			if (dataBase.viruses[dataBase.viruses.size() - 1].virusCheck(dataBase.animals[dataBase.animals.size() - 1]))
+			if (dataBase.viruses[dataBase.viruses.size() - 1].virusCheck(dataBase.animals[0]))
 				cout << "The virus is harmfull for animal!!!!" << endl;
 			else
 				cout << "The viris is harmless for animal!!!!" << endl;
@@ -299,7 +326,7 @@ void animalMenu(dataBase dataBase)
 		}
 	}
 }
-void display(Animal animal)
+void display(Cell animal)
 {
 
 	cout << "Do you want the genome to be displayed here?y/N (Not recommended)" << endl;
@@ -310,23 +337,37 @@ void display(Animal animal)
 
 	if (answer == 'y' || answer == 'Y')
 	{
-
+		string line;
 		for (auto &chrom : animal.chromosomes)
 		{
-			// receive the three parts of the line from user
-			string part1, part2, part3;
-
 			// create a string with the three parts separated by spaces
-			string line = to_string(chrom.first) + " " + chrom.second.getDNA()[0] + " " + chrom.second.getDNA()[1];
+			line = to_string(chrom.first) + " " + chrom.second.getDNA()[0] + " " + chrom.second.getDNA()[1];
 
 			// write the line to the file
 			cout << line << endl;
 		}
 	}
 }
-void saveGenome(Animal animal)
+void display2(Genome genome)
 {
-	ofstream myfile("child.txt");
+	cout << "Do you want the genome to be displayed here?y/N (Not recommended)" << endl;
+
+	char answer;
+
+	answer = getch();
+
+	if (answer == 'y' || answer == 'Y')
+	{
+		cout << "DNA" << endl
+			 << genome.DNA[0] << " " << genome.DNA[1] << endl
+			 << "RNA" << endl
+			 << genome.RNA << endl;
+	}
+}
+void saveGenome(Animal animal, string filename)
+{
+	system("CLS");
+	ofstream myfile(filename);
 
 	// write n lines
 	for (auto &chrom : animal.chromosomes)
@@ -344,5 +385,5 @@ void saveGenome(Animal animal)
 	// close the file
 	myfile.close();
 
-	cout << "The genome of your new animal has been saved in the <child.txt> file." << endl;
+	cout << "The genome of your new animal has been saved in the <" << filename << "> file." << endl;
 }
