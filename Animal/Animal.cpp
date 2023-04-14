@@ -5,73 +5,52 @@ Animal::Animal() : Cell() {};
 Animal::Animal(int chromosomeNumber, string filename) : Cell(chromosomeNumber, filename) {}
 
 
-double Animal::calculateSimilarity(string seq1, string seq2)
-{
+double Animal::calculateGeneticSimilarityPercent(string seq1, string seq2) {
     int n = seq1.length();
     int m = seq2.length();
-    int match_score = 1;
-    int mismatch_score = -1;
-    int gap_penalty = -2;
 
-    vector<vector<int>> dp(n + 1, vector<int>(m + 1));
+    // Create a matrix to store the Levenshtein distances
+    vector<vector<int>> dist(n+1, vector<int>(m+1, 0));
 
-    // Initialize first row and column with gap penalties
-    for (int i = 0; i <= n; i++)
-        dp[i][0] = i * gap_penalty;
-    for (int j = 0; j <= m; j++)
-        dp[0][j] = j * gap_penalty;
+    for(int i=1; i<=n; i++) {
+        dist[i][0] = i;
+    }
 
-    // Fill in the dynamic programming matrix using the scoring scheme
-    for (int i = 1; i <= n; i++)
-    {
-        for (int j = 1; j <= m; j++)
-        {
-            int match = dp[i - 1][j - 1] + (seq1[i - 1] == seq2[j - 1] ? match_score : mismatch_score);
-            int gap1 = dp[i - 1][j] + gap_penalty;
-            int gap2 = dp[i][j - 1] + gap_penalty;
-            dp[i][j] = max({match, gap1, gap2});
+    for(int j=1; j<=m; j++) {
+        dist[0][j] = j;
+    }
+
+    for(int j=1; j<=m; j++) {
+        for(int i=1; i<=n; i++) {
+            int cost = (seq1[i-1] == seq2[j-1]) ? 0 : 1;
+
+            dist[i][j] = min(dist[i-1][j] + 1, min(dist[i][j-1] + 1, dist[i-1][j-1] + cost));
         }
     }
 
-    // Trace back the optimal alignment to calculate similarity percentage
-    int i = n;
-    int j = m;
-    int matched = 0;
-    int total = 0;
-    while (i > 0 && j > 0)
-    {
-        if (seq1[i - 1] == seq2[j - 1])
-            matched++;
-        total++;
-        if (dp[i - 1][j - 1] + (seq1[i - 1] == seq2[j - 1] ? match_score : mismatch_score) == dp[i][j])
-        {
-            i--;
-            j--;
-        }
-        else if (dp[i - 1][j] + gap_penalty == dp[i][j])
-            i--;
-        else
-            j--;
-    }
+    // The Levenshtein distance is in the bottom-right corner of the matrix
+    int levenshteinDist = dist[n][m];
 
-    // Return the percentage of genetic similarity
-    return (double)matched / total * 100.0;
+    // Calculate the genetic similarity percentage
+    double similarityPercent = 100.0 - ((double)levenshteinDist / (double)max(n, m)) * 100.0;
+
+    return similarityPercent;
 }
 double Animal::calculateSimilarity(string *chr1, string *chr2)
 {
 
     // Calculate similarity between strand 1 of chromosome 1 and strand 1 of chromosome 2
-    double sim1 = calculateSimilarity(chr1[0], chr2[0]);
+    double sim1 = calculateGeneticSimilarityPercent(chr1[0], chr2[0]);
     // Calculate similarity between strand 2 of chromosome 1 and strand 1 of chromosome 2
-    double sim2 = calculateSimilarity(chr1[1], chr2[1]);
+    double sim2 = calculateGeneticSimilarityPercent(chr1[1], chr2[1]);
 
     // Take the average of the two similarity scores as the final similarity score for the chromosome pair
     double avg_sim1 = (sim1 + sim2) / 2.0;
 
     // Calculate similarity between strand 1 of chromosome 1 and strand 2 of chromosome 2
-    double sima1 = calculateSimilarity(chr1[0], chr2[1]);
+    double sima1 = calculateGeneticSimilarityPercent(chr1[0], chr2[1]);
     // Calculate similarity between strand 2 of chromosome 1 and strand 1 of chromosome 2
-    double sima2 = calculateSimilarity(chr2[0], chr1[1]);
+    double sima2 = calculateGeneticSimilarityPercent(chr2[0], chr1[1]);
 
     // Take the average of the two similarity scores as the final similarity score for the chromosome pair
     double avg_sim2 = (sima1 + sima2) / 2.0;
