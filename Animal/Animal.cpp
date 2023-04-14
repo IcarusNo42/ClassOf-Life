@@ -220,14 +220,15 @@ Virus::Virus(string RNA) : Genome(RNA){}
 // Finding the lcm
 string Virus::lcs(vector<pair<int, Genome>> str)
 {
-    string res = "";
+    string res1 = "";
+    string res2="";
 
     for (int i = 0; i < str[0].second.getDNA()[0].length(); i++)
     {
         for (int j = str[0].second.getDNA()[0].length() - i; j > -1; j--)
         {
-            cout << str[0].second.getDNA()[0].substr(i, j) << endl;
-            if (j > res.length())
+      
+            if (j > res1.length())
             {
                 for (int x = 1; x < str.size(); x++)
                 {
@@ -236,14 +237,38 @@ string Virus::lcs(vector<pair<int, Genome>> str)
                         break;
                     }
 
-                    if (x == 1)
-                        res = str[0].second.getDNA()[0].substr(i, j);
+                    if (x == str.size()-1)
+                        res1 = str[0].second.getDNA()[0].substr(i, j);
                 }
             }
         }
     }
-    return res;
+    for (int i = 0; i < str[0].second.getDNA()[1].length(); i++)
+    {
+        for (int j = str[0].second.getDNA()[1].length() - i; j > -1; j--)
+        {
+  
+            if (j > res2.length())
+            {
+                for (int x = 1; x < str.size(); x++)
+                {
+                    if (str[x].second.getDNA()[0].find(str[0].second.getDNA()[1].substr(i, j)) == std::string::npos && str[x].second.getDNA()[1].find(str[0].second.getDNA()[1].substr(i, j)) == std::string::npos)
+                    {
+                        break;
+                    }
+
+                    if (x == str.size()-1)
+                        res2 = str[0].second.getDNA()[1].substr(i, j);
+                }
+            }
+        }
+    }
+    if (res1.length()>=res2.length())
+    	return res1;
+    else
+    	return res2;
 }
+
 bool Virus::virusCheck(Animal a)
 {
     string r = lcs(a.chromosomes);
