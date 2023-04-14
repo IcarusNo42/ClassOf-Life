@@ -12,7 +12,7 @@ public:
     Animal();
     Animal(int chromosomeNumber, string filename);
 
-    double calculateSimilarity(string seq1, string seq2);
+    double calculateGeneticSimilarityPercent(string seq1, string seq2);
 
     double calculateSimilarity(string *chr1, string *chr2);
 
