@@ -18,7 +18,7 @@ public:
     Cell();
     Cell(int chromosomeNumber, string filename);
 
-    void cellDeath();
+    void cellDeath(vector<Cell>& cells,int x);
 
     void translocationMutation(string S1, int n, string S2, int m);
 

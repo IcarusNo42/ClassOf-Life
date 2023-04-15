@@ -30,7 +30,7 @@ Cell::Cell(int chromosomeNumber, string filename)
   file.close();
 }
 // Method to remove cells with incorrect base pairs
-void Cell::cellDeath()
+void Cell::cellDeath(vector<Cell>& cells,int x)
 {
   int pos = 0;
   for (auto &chrom : chromosomes)
@@ -68,8 +68,8 @@ void Cell::cellDeath()
     }
     if (found || Tpair > Cpair * 3)
     {
-      delete this;
       cout << "So you will lose your cell and it will die" << endl;
+      cells.erase( cells.begin() + x );
       break;
     }
   }
@@ -79,118 +79,32 @@ void Cell::translocationMutation(string S1, int n, string S2, int m)
 {
   auto &DNA1 = chromosomes[n - 1].second.DNA;
   auto &DNA2 = chromosomes[m - 1].second.DNA;
-  // Find the first occurrence of S1 in DNA1 using the KMP algorithm
-  int n1 = DNA1[0].size(), m1 = S1.size();
-  vector<int> lps1 = computeLPS(S1);
+  int m1 = S1.size() , m2 = S2.size();
   string _S1 = complementary(S1), _S2 = complementary(S2);
-  bool found1 = false, found2 = false;
-  int i = 0, j = 0, r = 0, p = 0, s = 0;
-  while (i < n1 || p < n1)
-  {
-    if (S1[j] == DNA1[0][i])
-    {
-      i++;
-      j++;
-    }
-    if (S1[r] == DNA1[1][p])
-    {
-      p++;
-      r++;
-    }
-    if (j == m1)
-    {
-      s = i - j;
-      found1 = true;
-      break;
-    }
-    else if (i < n1 && S1[j] != DNA1[0][i])
-    {
-      if (j != 0)
-        j = lps1[j - 1];
-      else
-        i++;
-    }
-    if (r == m1)
-    {
-      s = p - r;
-      found1 = true;
-      break;
-    }
-    else if (p < n1 && S1[r] != DNA1[1][p])
-    {
-      if (r != 0)
-        r = lps1[r - 1];
-      else
-        p++;
-    }
-  }
-  i = 0;
-  j = 0;
-  r = 0;
-  p = 0;
-  int n2 = DNA2[0].size(), m2 = S2.size();
-  vector<int> lps2 = computeLPS(S2);
-  while (i < n2 || p < n2)
-  {
-    if (S2[j] == DNA2[0][i])
-    {
-      i++;
-      j++;
-    }
-    if (S2[j] == DNA2[1][i])
-    {
-      p++;
-      r++;
-    }
-    if (j == m2)
-    {
-      j = i - j;
-      found2 = true;
-      break;
-    }
-    else if (i < n2 && S2[j] != DNA2[0][i])
-    {
-      if (j != 0)
-        j = lps2[j - 1];
-      else
-        i++;
-    }
-    if (r == m2)
-    {
-      j = p - r;
-      found2 = true;
-      break;
-    }
-    else if (p < n2 && S2[r] != DNA2[1][p])
-    {
-      if (r != 0)
-        r = lps2[r - 1];
-      else
-        p++;
-    }
-  }
+  // Find the first occurrence of S1 in DNA1 using the KMP algorithm
+ int s1 = KMP(S1,DNA1) , s2 = KMP(S2,DNA2);
   // Perform translocation mutation if both S1 and S2 were found in their respective chromosomes
-  if (found1 && found2)
+  if (s1>=0 && s2>=0)
   {
-    if (DNA1[0].substr(s, m1) == S1)
+    if (DNA1[0].substr(s1, m1) == S1)
     {
-      DNA1[0].replace(s, m1, S2);
-      DNA1[1].replace(s, m1, _S2);
+      DNA1[0].replace(s1, m1, S2);
+      DNA1[1].replace(s1, m1, _S2);
     }
     else
     {
-      DNA1[0].replace(s, m1, _S2);
-      DNA1[1].replace(s, m1, S2);
+      DNA1[0].replace(s1, m1, _S2);
+      DNA1[1].replace(s1, m1, S2);
     }
-    if (DNA2[0].substr(j, m2) == S2)
+    if (DNA2[0].substr(s2, m2) == S2)
     {
-      DNA2[0].replace(j, m2, S1);
-      DNA2[1].replace(j, m2, _S1);
+      DNA2[0].replace(s2, m2, S1);
+      DNA2[1].replace(s2, m2, _S1);
     }
     else
     {
-      DNA2[0].replace(j, m2, _S1);
-      DNA2[1].replace(j, m2, S1);
+      DNA2[0].replace(s2, m2, _S1);
+      DNA2[1].replace(s2, m2, S1);
     }
     cout << "The desired operation was completed successfully" << endl;
   }
@@ -200,61 +114,27 @@ void Cell::translocationMutation(string S1, int n, string S2, int m)
 // This method inversion a nucleotide sequence in DNA
 void Cell::inversionMutation(string s1, int chrom_num)
 {
-  int i = 0, j = 0, r = 0, p = 0, s = 0;
   string S2 = s1;
   auto &DNA = chromosomes[chrom_num - 1].second.DNA;
   reverse(S2.begin(), S2.end());
-  int n1 = DNA[0].size(), m1 = s1.size();
+  int m1 = s1.size();
   string _S2 = complementary(S2);
-  vector<int> lps1 = computeLPS(s1);
-  bool found = false;
-  while (i < n1 || p < n1)
-  {
-    if (s1[j] == DNA[0][i])
-    {
-      i++;
-      j++;
-    }
-    if (s1[r] == DNA[1][p])
-    {
-      p++;
-      r++;
-    }
-    if (j == m1)
-    {
-      s = i - j;
-      DNA[0].replace(s, m1, S2);
-      DNA[1].replace(s, m1, _S2);
-      found = true;
-      break;
-    }
-    else if (i < n1 && s1[j] != DNA[0][i])
-    {
-      if (j != 0)
-        j = lps1[j - 1];
-      else
-        i++;
-    }
-    if (r == m1)
-    {
-      s = p - r;
-      DNA[0].replace(s, m1, _S2);
-      DNA[1].replace(s, m1, S2);
-      found = true;
-      break;
-    }
-    else if (p < n1 && s1[r] != DNA[1][p])
-    {
-      if (r != 0)
-        r = lps1[r - 1];
-      else
-        p++;
-    }
-  }
-  if (!found)
-    cout << "It is not possible to carry out inversion mutation in the desired chromosome" << endl;
-  else
+  int s = KMP(s1,DNA);
+  if (s>=0){
+    if (DNA[0].substr(s, m1) == s1)
+		{
+			DNA[0].replace(s, m1, S2);
+			DNA[1].replace(s, m1, _S2);
+		}
+		else
+		{
+			DNA[0].replace(s, m1, _S2);
+			DNA[1].replace(s, m1, S2);
+		}
     cout << "The desired operation was completed successfully" << endl;
+  }
+  else
+    cout << "It is not possible to carry out inversion mutation in the desired chromosome" << endl;
 }
 string Cell::convertToNewString(const string &s)
 {
@@ -271,10 +151,10 @@ string Cell::convertToNewString(const string &s)
 // This method find allthe complementary palindromes nucleotide sequence in DNA
 void Cell::findComplementaryPalindromes(int m)
 {
-  string chromosome = chromosomes[m - 1].second.DNA[0];
+  for(int x=0; x < 2; x++){
+  string chromosome = chromosomes[m - 1].second.DNA[x];
   string Q = convertToNewString(chromosome);
   int c = 0, r = 0; // current center, right limit
-
   for (int i = 1; i < Q.size() - 1; i++)
   {
     // find the corresponding letter in the palidrome subString
@@ -305,6 +185,7 @@ void Cell::findComplementaryPalindromes(int m)
       r = i + P[i];
     }
   }
+  }
 }
 // This method replaces a specific number of nucleotides with another nucleotide
 void Cell::shortMutation(char o, char r, int num, int chorm_num)
@@ -314,28 +195,37 @@ void Cell::shortMutation(char o, char r, int num, int chorm_num)
   {
     bool finished = false;
     int count = 0;
-    for (int j = 0; j < 2; j++)
-    {
-      if (!finished)
-      {
         for (int i = 0; i < DNA[0].length(); i++)
         {
-          if (DNA[j][i] == o)
+          finished = true;
+          if (DNA[0][i] == o)
           {
-            DNA[j][i] = r;
-            DNA[1 - j][i] = complement[r];
+            DNA[0][i] = r;
+            DNA[1][i] = complement[r];
+            if (DNA[1][i] == o)
+              finished = false;
             count++;
             if (count == num)
             {
-              finished = true;
+              cout << "The desired operation was completed successfully" << endl;
+              break;
+            }
+          }
+              if (DNA[1][i] == o && finished)
+          {
+            DNA[1][i] = r;
+            DNA[0][i] = complement[r];
+            count++;
+            if (count == num)
+            {
               cout << "The desired operation was completed successfully" << endl;
               break;
             }
           }
         }
       }
-    }
-  }
+  
   else
     cout << "The target chromosome does not have a sufficient number of nucleotide " << o << " to cause a small mutation" << endl;
 }
+
