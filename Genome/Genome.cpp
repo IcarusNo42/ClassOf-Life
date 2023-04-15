@@ -24,10 +24,10 @@ void Genome::build()
 
 	for (int i = 0; i < RNA.length(); i++)
 	{
-		inputDNA[1]+= complement[RNA[i]];
+		inputDNA[1] += complement[RNA[i]];
 	}
 
-cout << "Do you want the genome to be displayed here?y/N (Not recommended)" << endl;
+	cout << "Do you want the genome to be displayed here?y/N (Not recommended)" << endl;
 
 	char answer;
 
@@ -35,8 +35,8 @@ cout << "Do you want the genome to be displayed here?y/N (Not recommended)" << e
 
 	if (answer == 'y' || answer == 'Y')
 	{
-		cout<<"DNA"<<endl
-			<<inputDNA[0]<<" "<<inputDNA[1]<<endl;
+		cout << "DNA" << endl
+			 << inputDNA[0] << " " << inputDNA[1] << endl;
 	}
 }
 // This method replaces a specific number of nucleotides with another nucleotide
@@ -77,77 +77,34 @@ void Genome::shortMutation(char a, char b, int n)
 // This method replace a nucleotide sequence with another one
 void Genome::translocationMutation(string S1, string S2)
 {
-	// Find the first occurrence of S1 in DNA using the KMP algorithm
-	int n1 = DNA[0].size(), m1 = S1.size();
+	int s = KMP(S1, DNA);
+	int i = 0, j = 0, s2 = 0;
+	int m1 = S1.size(), n1 = RNA.size();
+	string _S2 = complementary(S2);
 	vector<int> lps1 = computeLPS(S1);
-	string _S1 = complementary(S1), _S2 = complementary(S2);
-	bool found1 = false, found2 = false;
-	int i = 0, j = 0, r = 0, p = 0, s = 0;
-	while (i < n1 || p < n1)
-	{
-		if (S1[j] == DNA[0][i])
-		{
-			i++;
-			j++;
-		}
-		if (S1[r] == DNA[1][p])
-		{
-			p++;
-			r++;
-		}
-		if (j == m1)
-		{
-			s = i - j;
-			found1 = true;
-			break;
-		}
-		else if (i < n1 && S1[j] != DNA[0][i])
-		{
-			if (j != 0)
-				j = lps1[j - 1];
-			else
-				i++;
-		}
-		if (r == m1)
-		{
-			s = p - r;
-			found1 = true;
-			break;
-		}
-		else if (p < n1 && S1[r] != DNA[1][p])
-		{
-			if (r != 0)
-				r = lps1[r - 1];
-			else
-				p++;
-		}
-	}
-	i = 0;
-	j = 0;
-	int n2 = RNA.size(), m2 = S2.size();
-	vector<int> lps2 = computeLPS(S1);
-	while (i < n2)
+	bool found = false;
+	while (i < n1)
 	{
 		if (S1[j] == RNA[i])
 		{
 			i++;
 			j++;
 		}
-		if (j == m2)
+		if (j == m1)
 		{
-			j = i - j;
-			found2 = true;
+			s2 = i - j;
+			found = true;
 			break;
 		}
-		else if (i < n2 && S1[j] != RNA[i])
+		else if (i < n1 && S1[j] != RNA[i])
 		{
 			if (j != 0)
-				j = lps2[j - 1];
+				j = lps1[j - 1];
 			else
 				i++;
 		}
 	}
-	if (found1)
+	if (s >= 0)
 	{
 		if (DNA[0].substr(s, m1) == S1)
 		{
@@ -163,9 +120,9 @@ void Genome::translocationMutation(string S1, string S2)
 	}
 	else
 		cout << "The desired nucleotide sequence was not found in the chromosome, translocation mutation is not possible !!!" << '\n';
-	if (found2)
+	if (found)
 	{
-		RNA.replace(s, m1, S2);
+		RNA.replace(s2, m1, S2);
 
 		cout << "The desired operation was completed on RNA successfully " << endl;
 	}
@@ -175,31 +132,24 @@ void Genome::translocationMutation(string S1, string S2)
 // This method inversion a nucleotide sequence in DNA
 void Genome::inversionMutation(string s1)
 {
-	int i = 0, j = 0, r = 0, p = 0, s = 0;
+	int i = 0, j = 0, s2 = 0;
 	string S2 = s1;
 	reverse(S2.begin(), S2.end());
-	int n1 = DNA[0].size(), m1 = s1.size();
+	int m1 = s1.size(), n1 = DNA[0].size();
 	string _S2 = complementary(S2);
 	vector<int> lps1 = computeLPS(s1);
-	bool found = false, found2 = false;
-	;
-	while (i < n1 || p < n1)
+	bool found = false;
+	int s = KMP(s1, DNA);
+	while (i < n1)
 	{
 		if (s1[j] == DNA[0][i])
 		{
 			i++;
 			j++;
 		}
-		if (s1[r] == DNA[1][p])
-		{
-			p++;
-			r++;
-		}
 		if (j == m1)
 		{
-			s = i - j;
-			DNA[0].replace(s, m1, S2);
-			DNA[1].replace(s, m1, _S2);
+			s2 = i - j;
 			found = true;
 			break;
 		}
@@ -210,53 +160,28 @@ void Genome::inversionMutation(string s1)
 			else
 				i++;
 		}
-		if (r == m1)
+	}
+	if (s >= 0)
+	{
+		if (DNA[0].substr(s, m1) == s1)
 		{
-			s = p - r;
+			DNA[0].replace(s, m1, S2);
+			DNA[1].replace(s, m1, _S2);
+		}
+		else
+		{
 			DNA[0].replace(s, m1, _S2);
 			DNA[1].replace(s, m1, S2);
-			found = true;
-			break;
 		}
-		else if (p < n1 && s1[r] != DNA[1][p])
-		{
-			if (r != 0)
-				r = lps1[r - 1];
-			else
-				p++;
-		}
-	}
-	i = 0;
-	j = 0;
-	int n2 = RNA.size();
-	while (i < n2)
-	{
-		if (s1[j] == RNA[i])
-		{
-			i++;
-			j++;
-		}
-		if (j == m1)
-		{
-			s = i - j;
-			DNA[0].replace(s, m1, S2);
-			found2 = true;
-			break;
-		}
-		else if (i < n2 && s1[j] != RNA[i])
-		{
-			if (j != 0)
-				j = lps1[j - 1];
-			else
-				i++;
-		}
-	}
-	if (!found)
-		cout << "It is not possible to carry out inversion mutation in the desired DNA" << endl;
-	else
 		cout << "The desired operation was completed on DNA successfully" << endl;
-	if (!found2)
-		cout << "It is not possible to carry out inversion mutation in the desired RNA" << endl;
+	}
 	else
+		cout << "It is not possible to carry out inversion mutation in the desired DNA" << endl;
+	if (found)
+	{
+		RNA.replace(s2, m1, S2);
 		cout << "The desired operation was completed on RNA successfully" << endl;
+	}
+	else
+		cout << "It is not possible to carry out inversion mutation in the desired RNA" << endl;
 }
