@@ -304,7 +304,7 @@ int main()
 			break;
 		}
 	}
-}
+} 	
 void genomeMenu(dataBase &dataBase, int x)
 {
 	int n, c, cn, cn2;
