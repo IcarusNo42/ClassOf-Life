@@ -31,10 +31,190 @@ public:
 		Virus virus(RNA);
 		viruses.push_back(virus);
 	}
+	int animalChoice()
+	{
+		int x = animals.size(), n, l;
+		cout << "You currently have " << x << " animals in the database" << endl
+			 << "Do you want to insert a new animal?y/N" << endl;
+		char answer;
+
+		answer = getch();
+
+		if (answer == 'y' || answer == 'Y')
+			l = 0;
+		else
+		{
+			cout << "Do you want to see genome content before inserting ?" << endl;
+
+			answer = getch();
+
+			if (answer == 'y' || answer == 'Y')
+			{
+				while (true)
+				{
+					cout << "So enter the number of animals in the database that you want see(enter -1 to skip)" << endl;
+					cin >> n;
+					system("CLS");
+					if (n == -1)
+						break;
+					if (n < 1 || n > animals.size())
+					{
+						while (n < 1 || n > animals.size())
+						{
+							cout << "The input number is out of range. Try again" << endl;
+							cin >> n;
+						}
+					}
+					display(animals[n - 1]);
+				}
+			}
+			cout << "So enter the number of animals in the database that you want use" << endl;
+			cin >> n;
+			if (n < 1 || n > animals.size())
+			{
+				while (n < 1 || n > animals.size())
+				{
+					cout << "The input number is out of range. Try again" << endl;
+					cin >> n;
+				}
+			}
+			l = n;
+		}
+		return l;
+	}
+	int genomeChoice()
+	{
+		int x = genomes.size(), n, l;
+		cout << "You currently have " << x << " genomes in the database" << endl
+			 << "Do you want to insert a new Genome?y/N" << endl;
+		char answer;
+
+		answer = getch();
+
+		if (answer == 'y' || answer == 'Y')
+			l = 0;
+		else
+		{
+			cout << "Do you want to see genome content before inserting ?" << endl;
+
+			answer = getch();
+
+			if (answer == 'y' || answer == 'Y')
+			{
+				while (true)
+				{
+					cout << "So enter the number of animals in the database that you want see(enter -1 to skip)" << endl;
+					cin >> n;
+					system("CLS");
+					if (n == -1)
+						break;
+					if (n < 1 || n > genomes.size())
+					{
+						while (n < 1 || n > genomes.size())
+						{
+							cout << "The input number is out of range. Try again" << endl;
+							cin >> n;
+						}
+					}
+					display2(genomes[n - 1]);
+				}
+			}
+			cout << "So enter the number of genomes in the database that you want use" << endl;
+			cin >> n;
+			if (n < 1 || n > genomes.size())
+			{
+				while (n < 1 || n > genomes.size())
+				{
+					cout << "The input number is out of range. Try again" << endl;
+					cin >> n;
+				}
+			}
+			l = n;
+		}
+		return l;
+	}
+	int cellChoice()
+	{
+		int x = cells.size(), n, l;
+		cout << "You currently have " << x << " cells in the database" << endl
+			 << "Do you want to insert a new cell?y/N" << endl;
+		char answer;
+
+		answer = getch();
+
+		if (answer == 'y' || answer == 'Y')
+			l = 0;
+		else
+		{
+			cout << "Do you want to see genome content before inserting ?" << endl;
+
+			answer = getch();
+
+			if (answer == 'y' || answer == 'Y')
+			{
+				while (true)
+				{
+					cout << "So enter the number of animals in the database that you want see(enter -1 to skip)" << endl;
+					cin >> n;
+					system("CLS");
+					if (n == -1)
+						break;
+					if (n < 1 || n > cells.size())
+					{
+						while (n < 1 || n > cells.size())
+						{
+							cout << "The input number is out of range. Try again" << endl;
+							cin >> n;
+						}
+					}
+					display(cells[n - 1]);
+				}
+			}
+			cout << "So enter the number of cells in the database that you want use" << endl;
+			cin >> n;
+			if (n < 1 || n > cells.size())
+			{
+				while (n < 1 || n > cells.size())
+				{
+					cout << "The input number is out of range. Try again" << endl;
+					cin >> n;
+				}
+			}
+			l = n;
+		}
+		return l;
+	}
+	int virusChoice()
+	{
+		int x = viruses.size(), n, l;
+		cout << "You currently have " << x << " viruses in the database" << endl
+			 << "Do you want to insert a new virus?y/N" << endl;
+		char answer;
+
+		answer = getch();
+
+		if (answer == 'y' || answer == 'Y')
+			l = 0;
+		else
+		{
+			cout << "So enter the number of viruses in the database that you want use" << endl;
+			cin >> n;
+			if (n < 1 || n > viruses.size())
+			{
+				while (n < 1 || n > viruses.size())
+				{
+					cout << "The input number is out of range. Try again" << endl;
+					cin >> n;
+				}
+			}
+			l = n;
+		}
+		return l;
+	}
 };
-void genomeMenu(dataBase dataBase);
-void cellMenu(dataBase dataBase, int n);
-void animalMenu(dataBase dataBase);
+void genomeMenu(dataBase &dataBase, int x);
+void cellMenu(dataBase &dataBase, int n, int x);
+void animalMenu(dataBase &dataBase, int x);
 void saveGenome(Animal animal, string filename);
 void display(Cell animal);
 void display2(Genome genome);
@@ -42,7 +222,7 @@ int main()
 {
 	system("CLS");
 	int choice = -1;
-	int c;
+	int c, x, l, n;
 	string fileName, first, second, RNA;
 	dataBase dataBase;
 	while (choice != 0)
@@ -59,32 +239,61 @@ int main()
 		switch (choice)
 		{
 		case 1:
-			cout << "Enter a RNA :" << endl;
-			cin >> RNA;
-			cout << "Enter a first string of DNA:" << endl;
-			cin >> first;
-			cout << "Enter a second string of DNA :" << endl;
-			cin >> second;
-			dataBase.addGenome(first, second, RNA);
-			genomeMenu(dataBase);
+			l = 0;
+			x = dataBase.genomes.size();
+			if (x)
+			{
+				l = dataBase.genomeChoice();
+			}
+			if (!l)
+			{
+				cout << "Enter a RNA :" << endl;
+				cin >> RNA;
+				cout << "Enter a first string of DNA:" << endl;
+				cin >> first;
+				cout << "Enter a second string of DNA :" << endl;
+				cin >> second;
+				dataBase.addGenome(first, second, RNA);
+				l = dataBase.genomes.size();
+			}
+			genomeMenu(dataBase, l - 1);
 			break;
 		case 2:
-			cout << "Enter the Chromosomes number of the desired cell:" << endl;
-			cin >> c;
-			cout << "Enter the name of the file in which the genetic content of the cell is located:" << endl;
-			cin >> fileName;
-			dataBase.addCell(c, fileName);
-			cellMenu(dataBase, 1);
-
+			l = 0;
+			x = dataBase.cells.size();
+			if (x)
+			{
+				l = dataBase.cellChoice();
+			}
+			if (!l)
+			{
+				cout << "Enter the Chromosomes number of the desired cell:" << endl;
+				cin >> c;
+				cout << "Enter the name of the file in which the genetic content of the cell is located:" << endl;
+				cin >> fileName;
+				dataBase.addCell(c, fileName);
+				l = dataBase.cells.size();
+			}
+			cellMenu(dataBase, 1, l - 1);
 			break;
 		case 3:
+			l = 0;
+			x = dataBase.animals.size();
+			if (x)
+			{
+				l = dataBase.animalChoice();
+			}
+			if (!l)
+			{
+				cout << "Enter the Chromosomes number of the desired animaal:" << endl;
+				cin >> c;
+				cout << "Enter the name of the file in which the genetic content of the animal is located:" << endl;
+				cin >> fileName;
+				dataBase.addAnimal(c, fileName);
+				l = dataBase.animals.size();
+			}
+			animalMenu(dataBase, l - 1);
 
-			cout << "Enter the Chromosomes number of the desired animaal:" << endl;
-			cin >> c;
-			cout << "Enter the name of the file in which the genetic content of the animal is located:" << endl;
-			cin >> fileName;
-			dataBase.addAnimal(c, fileName);
-			animalMenu(dataBase);
 			break;
 		case 0:
 			break;
@@ -96,13 +305,13 @@ int main()
 		}
 	}
 }
-void genomeMenu(dataBase dataBase)
+void genomeMenu(dataBase &dataBase, int x)
 {
 	int n, c, cn, cn2;
 	char a, b;
 	string str1, str2, fileName;
 	int subChoice = -1;
-	Genome g = dataBase.genomes[dataBase.genomes.size() - 1];
+	Genome *g = &dataBase.genomes[x];
 	while (subChoice != 0)
 	{
 		cout << "Choose your action:" << endl;
@@ -117,27 +326,27 @@ void genomeMenu(dataBase dataBase)
 		switch (subChoice)
 		{
 		case 1:
-			g.build();
+			g->build();
 			break;
 		case 2:
 			cout << "First enter the nucleotide you want to delete and then enter the nucleotide you want to replace with a space: " << endl;
 			cin >> a >> b;
 			cout << "Now enter desired number of mutation: ";
 			cin >> n;
-			g.shortMutation(a, b, n);
-			display2(g);
+			g->shortMutation(a, b, n);
+			display2(*g);
 			break;
 		case 3:
 			cout << "First enter the sequence you want to delete and then enter the sequence you want to replace with a space:" << endl;
 			cin >> str1 >> str2;
-			g.translocationMutation(str1, str2);
-			display2(g);
+			g->translocationMutation(str1, str2);
+			display2(*g);
 			break;
 		case 4:
 			cout << "Enter a sequence you want to reverse: " << endl;
 			cin >> str1;
-			g.inversionMutation(str1);
-			display2(g);
+			g->inversionMutation(str1);
+			display2(*g);
 			break;
 		case 0:
 			break;
@@ -148,24 +357,26 @@ void genomeMenu(dataBase dataBase)
 		}
 	}
 }
-void cellMenu(dataBase dataBase, int s)
+void cellMenu(dataBase &dataBase, int s, int x)
 {
-	int n, c, cn, cn2;
+	int n, c, cn, cn2, cnt;
 	char a, b;
 	string str1, str2, fileName;
 	int subChoice = -1;
-	Cell *cell;
+	Cell *cell = new Cell;
 	if (s)
-		cell = &dataBase.cells[dataBase.cells.size() - 1];
+		cell = &dataBase.cells[x];
 	else
-		cell = &dataBase.animals[dataBase.animals.size() - 1];
+		cell = &dataBase.animals[x];
 	while (subChoice != 0)
 	{
+
 		cout << "Please choose your action:" << endl;
 		cout << "1.Cell's death" << endl
 			 << "2.Translocation mutation" << endl
 			 << "3.Small mutation" << endl
 			 << "4.inversion mutation" << endl
+			 << "5.findComplementaryPalindromes" << endl
 			 << "0.Back" << endl;
 		cin >> subChoice;
 		system("CLS");
@@ -173,7 +384,8 @@ void cellMenu(dataBase dataBase, int s)
 		switch (subChoice)
 		{
 		case 1:
-			cell->cellDeath();
+			cell->cellDeath(dataBase.cells, x);
+			subChoice = 0;
 			break;
 		case 2:
 			cout << "First, enter the number of the two chromosomes between which you want the mutation to occur with a space" << endl;
@@ -201,6 +413,11 @@ void cellMenu(dataBase dataBase, int s)
 			cell->inversionMutation(str1, cn);
 			display(*cell);
 			break;
+		case 5:
+			cout << "Enter the number od desired chromosome: " << endl;
+			cin >> cn;
+			cell->findComplementaryPalindromes(cn);
+			break;
 		case 0:
 			break;
 		default:
@@ -210,13 +427,12 @@ void cellMenu(dataBase dataBase, int s)
 		}
 	}
 }
-void animalMenu(dataBase dataBase)
+void animalMenu(dataBase &dataBase, int x)
 {
-	int n, c, cn, cn2;
+	int n, c, cn, cn2, y, Q;
 	int subChoice = -1;
 	string fileName, RNA;
 	Animal *nAnimal;
-	// Animal* animal = &dataBase.animals[dataBase.animals.size() - 1];
 	while (subChoice != 0)
 	{
 		cout << "Please choose your action:" << endl;
@@ -235,30 +451,48 @@ void animalMenu(dataBase dataBase)
 		{
 		case 1:
 			cout << "You also need another animal to use this method" << endl;
-			cout << "Enter the Chromosomes number of the desired another animaal:" << endl;
-			cin >> c;
-			cout << "Enter the name of the file in which the genetic content of the another animal is located:" << endl;
-			cin >> fileName;
-			dataBase.addAnimal(c, fileName);
-			// Animal* animal2 = &dataBase.animals[dataBase.animals.size() - 1];
-			cout << "The percentage of genetic similarity between the two breeds is " << dataBase.animals[0].totalSimilarity(dataBase.animals[dataBase.animals.size() - 1]) << "%" << endl;
+			y = 0;
+			Q = dataBase.animals.size();
+			if (Q)
+			{
+				y = dataBase.animalChoice();
+			}
+			if (!y)
+			{
+				cout << "Enter the Chromosomes number of the desired another animaal:" << endl;
+				cin >> c;
+				cout << "Enter the name of the file in which the genetic content of the another animal is located:" << endl;
+				cin >> fileName;
+				dataBase.addAnimal(c, fileName);
+				y = dataBase.animals.size();
+			}
+			cout << "The percentage of genetic similarity between the two breeds is " << dataBase.animals[x].totalSimilarity(dataBase.animals[y - 1]) << "%" << endl;
 			break;
 		case 2:
 			cout << "You also need another animal to use this method" << endl;
-			cout << "Enter the Chromosomes number of the desired another animaal:" << endl;
-			cin >> c;
-			cout << "Enter the name of the file in which the genetic content of the another animal is located:" << endl;
-			cin >> fileName;
-			dataBase.addAnimal(c, fileName);
-			// Animal* animal2 = &dataBase.animals[dataBase.animals.size() - 1];
-			if (dataBase.animals[0] == dataBase.animals[dataBase.animals.size() - 1])
+			y = 0;
+			Q = dataBase.animals.size();
+			if (Q)
+			{
+				y = dataBase.animalChoice();
+			}
+			if (!y)
+			{
+				cout << "Enter the Chromosomes number of the desired another animaal:" << endl;
+				cin >> c;
+				cout << "Enter the name of the file in which the genetic content of the another animal is located:" << endl;
+				cin >> fileName;
+				dataBase.addAnimal(c, fileName);
+				y = dataBase.animals.size();
+			}
+			if (dataBase.animals[x] == dataBase.animals[y - 1])
 				cout << "Both animals are of the same species " << endl;
 			else
 				cout << "Both animals are not of the same species " << endl;
 			break;
 		case 3:
-			// display(dataBase.animals[dataBase.animals.size() - 1]);
-			nAnimal = dataBase.animals[0].asexualReproduction();
+
+			nAnimal = dataBase.animals[x].asexualReproduction();
 			if (nAnimal != NULL)
 			{
 				cout << "Do you want to save the new animal?y/N" << endl;
@@ -278,13 +512,22 @@ void animalMenu(dataBase dataBase)
 			break;
 		case 4:
 			cout << "You also need another animal to use this method" << endl;
-			cout << "Enter the Chromosomes number of the desired another animaal:" << endl;
-			cin >> c;
-			cout << "Enter the name of the file in which the genetic content of the another animal is located:" << endl;
-			cin >> fileName;
-			dataBase.addAnimal(c, fileName);
-			nAnimal = dataBase.animals[0] + dataBase.animals[dataBase.animals.size() - 1];
-			// Animal dataBase.animals[dataBase.animals.size() - 2] = dataBase.animals[dataBase.animals.size() - 1];
+			y = 0;
+			Q = dataBase.animals.size();
+			if (Q)
+			{
+				y = dataBase.animalChoice();
+			}
+			if (!y)
+			{
+				cout << "Enter the Chromosomes number of the desired another animaal:" << endl;
+				cin >> c;
+				cout << "Enter the name of the file in which the genetic content of the another animal is located:" << endl;
+				cin >> fileName;
+				dataBase.addAnimal(c, fileName);
+				y = dataBase.animals.size();
+			}
+			nAnimal = dataBase.animals[x] + dataBase.animals[y - 1];
 			if (nAnimal != NULL)
 			{
 				cout << "Do you want to save the new animal?y/N" << endl;
@@ -303,16 +546,26 @@ void animalMenu(dataBase dataBase)
 
 			break;
 		case 5:
-			dataBase.animals[0].removeIncorrectPairs();
+			dataBase.animals[x].removeIncorrectPairs();
 			break;
 		case 6:
-			cellMenu(dataBase, 0);
+			cellMenu(dataBase, 0, x);
 			break;
 		case 7:
-			cout << "Enter the RNA of the desired virus:" << endl;
-			cin >> RNA;
-			dataBase.addVirus(RNA);
-			if (dataBase.viruses[dataBase.viruses.size() - 1].virusCheck(dataBase.animals[0]))
+			y = 0;
+			Q = dataBase.viruses.size();
+			if (Q)
+			{
+				y = dataBase.animalChoice();
+			}
+			if (!y)
+			{
+				cout << "Enter the RNA of the desired virus:" << endl;
+				cin >> RNA;
+				dataBase.addVirus(RNA);
+				y = dataBase.viruses.size();
+			}
+			if (dataBase.viruses[y - 1].virusCheck(dataBase.animals[x]))
 				cout << "The virus is harmfull for animal!!!!" << endl;
 			else
 				cout << "The viris is harmless for animal!!!!" << endl;
