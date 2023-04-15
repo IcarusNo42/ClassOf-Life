@@ -1,30 +1,33 @@
 #include "Animal.h"
 
-
-Animal::Animal() : Cell() {};
+Animal::Animal() : Cell(){};
 Animal::Animal(int chromosomeNumber, string filename) : Cell(chromosomeNumber, filename) {}
-
-
-double Animal::calculateGeneticSimilarityPercent(string seq1, string seq2) {
+// The percentage of similarity between two animals
+double Animal::calculateGeneticSimilarityPercent(string seq1, string seq2)
+{
     int n = seq1.length();
     int m = seq2.length();
 
     // Create a matrix to store the Levenshtein distances
-    vector<vector<int>> dist(n+1, vector<int>(m+1, 0));
+    vector<vector<int>> dist(n + 1, vector<int>(m + 1, 0));
 
-    for(int i=1; i<=n; i++) {
+    for (int i = 1; i <= n; i++)
+    {
         dist[i][0] = i;
     }
 
-    for(int j=1; j<=m; j++) {
+    for (int j = 1; j <= m; j++)
+    {
         dist[0][j] = j;
     }
 
-    for(int j=1; j<=m; j++) {
-        for(int i=1; i<=n; i++) {
-            int cost = (seq1[i-1] == seq2[j-1]) ? 0 : 1;
+    for (int j = 1; j <= m; j++)
+    {
+        for (int i = 1; i <= n; i++)
+        {
+            int cost = (seq1[i - 1] == seq2[j - 1]) ? 0 : 1;
 
-            dist[i][j] = min(dist[i-1][j] + 1, min(dist[i][j-1] + 1, dist[i-1][j-1] + cost));
+            dist[i][j] = min(dist[i - 1][j] + 1, min(dist[i][j - 1] + 1, dist[i - 1][j - 1] + cost));
         }
     }
 
@@ -97,9 +100,10 @@ double Animal::totalSimilarity(Animal chr_list2)
 
     return (avg_sim + avg_sim2) / 2;
 }
+
 bool Animal::operator==(const Animal &sec)
 {
-    return (totalSimilarity( sec) >= 70 && chromosomeNumber == sec.chromosomeNumber);
+    return (totalSimilarity(sec) >= 70 && chromosomeNumber == sec.chromosomeNumber);
 }
 vector<int> Animal::generateRandom(int m)
 {
@@ -136,26 +140,26 @@ vector<int> Animal::generateRandom(int m)
 
     return result;
 }
-
-Animal* Animal::asexualReproduction()
+// method to asexualReproduction
+Animal *Animal::asexualReproduction()
 {
-    Animal* nn = new Animal;
+    Animal *nn = new Animal;
     vector<int> basic = generateRandom(chromosomeNumber);
-    cout<<basic.size()<<endl;
     Genome chrm;
-    for (int i = 0; i < basic.size(); i++){
+    for (int i = 0; i < basic.size(); i++)
+    {
         chrm = chromosomes[basic[i] - 1].second;
-        nn->chromosomes.push_back(make_pair(i + 1,chrm ));
-}  
+        nn->chromosomes.push_back(make_pair(i + 1, chrm));
+    }
     nn->chromosomeNumber = chromosomeNumber;
     return nn;
 }
-
-Animal* Animal::operator+( Animal sec)
+// method to sexualReproduction
+Animal *Animal::operator+(Animal sec)
 {
-    Animal* p1 = asexualReproduction();
-    Animal* p2 = sec.asexualReproduction();
-    Animal* child;
+    Animal *p1 = asexualReproduction();
+    Animal *p2 = sec.asexualReproduction();
+    Animal *child;
     if (p1 == p2 && chromosomeNumber % 2 == 0)
     {
         while (!(child == p1 && child == p2))
@@ -176,13 +180,14 @@ Animal* Animal::operator+( Animal sec)
         cout << "Two organisms are not of the same species, so they cannot have sexual reproduction!!!" << endl;
     return NULL;
 }
+// Remove incorrect chromosomes
 void Animal::removeIncorrectPairs()
 {
     int pos = 0;
     for (auto &chrom : chromosomes)
     {
         int incorrect_pairs = 0;
-        string* DNA = chrom.second.getDNA();
+        string *DNA = chrom.second.getDNA();
         // Loop over each DNA strand in the chromosome
         int len = DNA[0].size();
         int mismatches = 0;
@@ -205,8 +210,6 @@ void Animal::removeIncorrectPairs()
                     break;
                 }
             }
-            if (mismatches <= 5)
-                pos++;
             if (base1 == 'T' || base1 == 'A')
                 Tpair++;
             else
@@ -216,32 +219,35 @@ void Animal::removeIncorrectPairs()
         {
             cout << "Chromosome number " << chrom.first << " was destroyed due to having more than 5 incorrect base pairs !!!" << '\n';
             chromosomes.erase(chromosomes.begin() + pos); // remove the chromosome
+            found = true;
         }
+        if (!found)
+            pos++;
     }
 }
 
-Virus::Virus(string RNA) : Genome(RNA){}
+Virus::Virus(string RNA) : Genome(RNA) {}
 // Finding the lcm
 string Virus::lcs(vector<pair<int, Genome>> str)
 {
     string res1 = "";
-    string res2="";
+    string res2 = "";
 
     for (int i = 0; i < str[0].second.getDNA()[0].length(); i++)
     {
         for (int j = str[0].second.getDNA()[0].length() - i; j > -1; j--)
         {
-      
+
             if (j > res1.length())
             {
                 for (int x = 1; x < str.size(); x++)
                 {
-                    if (str[x].second.getDNA()[0].find(str[0].second.getDNA()[0].substr(i, j)) == std::string::npos && str[x].second.getDNA()[1].find(str[0].second.getDNA()[0].substr(i, j)) == std::string::npos)
+                    if (!(findWithKMP(str[0].second.getDNA()[0].substr(i, j), str[x].second.getDNA()[0])) && (!findWithKMP(str[0].second.getDNA()[0].substr(i, j), str[x].second.getDNA()[1])))
                     {
                         break;
                     }
 
-                    if (x == str.size()-1)
+                    if (x == str.size() - 1)
                         res1 = str[0].second.getDNA()[0].substr(i, j);
                 }
             }
@@ -251,46 +257,38 @@ string Virus::lcs(vector<pair<int, Genome>> str)
     {
         for (int j = str[0].second.getDNA()[1].length() - i; j > -1; j--)
         {
-  
+
             if (j > res2.length())
             {
                 for (int x = 1; x < str.size(); x++)
                 {
-                    if (str[x].second.getDNA()[0].find(str[0].second.getDNA()[1].substr(i, j)) == std::string::npos && str[x].second.getDNA()[1].find(str[0].second.getDNA()[1].substr(i, j)) == std::string::npos)
+                    if (!(findWithKMP(str[0].second.getDNA()[1].substr(i, j), str[x].second.getDNA()[0])) && !(findWithKMP(str[0].second.getDNA()[1].substr(i, j), str[x].second.getDNA()[1])))
                     {
                         break;
                     }
 
-                    if (x == str.size()-1)
+                    if (x == str.size() - 1)
                         res2 = str[0].second.getDNA()[1].substr(i, j);
                 }
             }
         }
     }
-    if (res1.length()>=res2.length())
-    	return res1;
+    if (res1.length() >= res2.length())
+        return res1;
     else
-    	return res2;
+        return res2;
 }
-
+// method to check if the virus is safe or not
 bool Virus::virusCheck(Animal a)
 {
     string r = lcs(a.chromosomes);
-    string s ="";
+    string s = "";
     for (int i = 0; i < r.length(); i++)
-    {
         s += complement[r[i]];
-    }
-    if (RNA.find(r) != std::string::npos)
-    {
+    if (findWithKMP(r, RNA))
         return true;
-    }
-    else if (RNA.find(s) != std::string::npos)
-    {
+    else if (findWithKMP(s, RNA))
         return true;
-    }
     else
-    {
         return false;
-    }
 }

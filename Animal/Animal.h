@@ -6,6 +6,7 @@
 #include <cmath>
 #include "Genome.h"
 #include "Cell.h"
+#include "Functions.h"
 class Animal : public Cell
 {
 public:
